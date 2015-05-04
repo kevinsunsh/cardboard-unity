@@ -1,4 +1,4 @@
-﻿// Copyright 2014 Google Inc. All rights reserved.
+// Copyright 2014 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,13 +18,25 @@ using System.Collections;
 [RequireComponent(typeof(Collider))]
 public class Teleport : MonoBehaviour {
   private Vector3 startingPosition;
+  //public string deviceName;
+  //WebCamTexture WCT;
 
   void Start() {
+	//WebCamDevice[] devices = WebCamTexture.devices;
+	//	Debug.Log("kevin debug test");
+	//if (devices.GetLength (0) > 0) {
+	//	deviceName = devices [0].name;
+	//		Debug.LogFormat("GetLength = {0}  deviceName = {1}", devices.GetLength (0), deviceName);
+	//	WCT = new WebCamTexture (deviceName, 400, 300, 12);
+	//	RenderSettings.skybox.mainTexture = WCT;
+	//	WCT.Play ();
+	//}
     startingPosition = transform.localPosition;
     SetGazedAt(false);
   }
 
   public void SetGazedAt(bool gazedAt) {
+	//	System.Console.WriteLine("kevin debug test");
     GetComponent<Renderer>().material.color = gazedAt ? Color.green : Color.red;
   }
 
@@ -37,5 +49,5 @@ public class Teleport : MonoBehaviour {
     direction.y = Mathf.Clamp(direction.y, 0.5f, 1f);
     float distance = 2 * Random.value + 1.5f;
     transform.localPosition = direction * distance;
-  }
+  }	
 }
