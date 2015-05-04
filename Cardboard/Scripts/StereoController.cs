@@ -142,6 +142,15 @@ public class StereoController : MonoBehaviour {
     }
   }
 
+	// Returns the CardboardEye components that we control.
+	public CardboardEyeBG[] EyeBGs {
+		get {
+			return GetComponentsInChildren<CardboardEyeBG>(true)
+				.Where(eye => eye.Controller == this)
+					.ToArray();
+		}
+	}
+
   // Where the stereo eyes will render the scene.
   public RenderTexture StereoScreen {
     get {
@@ -197,6 +206,22 @@ public class StereoController : MonoBehaviour {
     var cardboardEye = go.AddComponent<CardboardEye>();
     cardboardEye.eye = eye;
     cardboardEye.CopyCameraAndMakeSideBySide(this);
+
+	nm = name + (eye == Cardboard.Eye.Left ? " LeftBG" : " RightBG");
+	go = new GameObject(nm);
+	go.transform.parent = transform;
+	go.AddComponent<Camera>().enabled = false;
+	#if !UNITY_5
+	if (GetComponent<GUILayer>() != null) {
+		go.AddComponent<GUILayer>();
+	}
+	if (GetComponent("FlareLayer") != null) {
+		go.AddComponent("FlareLayer");
+	}
+	#endif
+	var cardboardEyeBG = go.AddComponent<CardboardEyeBG>();
+	cardboardEyeBG.eye = eye;
+	cardboardEyeBG.CopyCameraAndMakeSideBySide(this);
   }
 
   // Given information about a specific camera (usually one of the stereo eyes),
@@ -275,11 +300,16 @@ public class StereoController : MonoBehaviour {
         GL.Clear(true, true, Color.black);
       }
     }
+		
+		foreach (var eyeBG in EyeBGs) {
+			eyeBG.Render();
+		}
 
     // Render the eyes under our control.
     foreach (var eye in Eyes) {
       eye.Render();
     }
+
 
     if (mainCamera && Application.isEditor && Cardboard.SDK.EnableAlignmentMarker) {
       // Draw an alignment marker here, since the native SDK which normally does this is not

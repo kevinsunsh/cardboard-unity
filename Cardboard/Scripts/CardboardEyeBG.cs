@@ -21,7 +21,7 @@ using System.Reflection;
 // To enable a stereo camera pair, enable the parent mono camera and set
 // Cardboard.SDK.VRModeEnabled = true.
 [RequireComponent(typeof(Camera))]
-public class CardboardEye : MonoBehaviour {
+public class CardboardEyeBG : MonoBehaviour {
   // Whether this is the left eye or the right eye.
   public Cardboard.Eye eye;
 
@@ -54,7 +54,7 @@ public class CardboardEye : MonoBehaviour {
   void Start() {
     var ctlr = Controller;
     if (ctlr == null) {
-      Debug.LogError("CardboardEye must be child of a StereoController.");
+      Debug.LogError("CardboardEyeBG must be child of a StereoController.");
       enabled = false;
     }
     // Save reference to the found controller.
@@ -239,7 +239,10 @@ public class CardboardEye : MonoBehaviour {
 
     // Sync the camera properties.
     camera.CopyFrom(controller.GetComponent<Camera>());
-    camera.cullingMask ^= toggleCullingMask.value;
+    //camera.cullingMask ^= toggleCullingMask.value;
+	camera.clearFlags = CameraClearFlags.SolidColor;
+	camera.depth = -1;
+	camera.cullingMask = toggleCullingMask.value;
     // Reset transform, which was clobbered by the CopyFrom() call.
     // Since we are a child of the mono camera, we inherit its
     // transform already.
